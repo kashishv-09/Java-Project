@@ -23,7 +23,8 @@ public class ImageProcessing {
             if (watermarkOption.equalsIgnoreCase("yes")) {
                 System.out.println("Enter the path of the input image:");
                 String inputPath = scanner.nextLine();
-                addWatermark(inputPath);
+                String watermarkText = "";
+                addWatermark(inputPath, watermarkText);
 
             }
 
@@ -46,10 +47,13 @@ public class ImageProcessing {
         }
     }
 
-    private static void addWatermark(String inputPath) throws IOException {
+    public static long addWatermark(String inputPath, String watermarkText) throws IOException {
         // Load the original image
         File inputImageFile = new File(inputPath);
         BufferedImage inputImage = ImageIO.read(inputImageFile);
+
+        // Print the size of the original image
+        System.out.println("Original image size: " + inputImageFile.length() + " bytes");
 
         // Create a new BufferedImage to hold the watermarked image
         BufferedImage outputImage = new BufferedImage(inputImage.getWidth(), inputImage.getHeight(),
@@ -68,7 +72,7 @@ public class ImageProcessing {
         graphics.setColor(color);
 
         // Add the watermark text to the output image
-        String watermarkText = "Watermarked";
+        // String watermarkText = "Watermarked";
         int x = outputImage.getWidth() / 2 - graphics.getFontMetrics().stringWidth(watermarkText) / 2;
         int y = outputImage.getHeight() / 2;
         graphics.drawString(watermarkText, x, y);
@@ -76,12 +80,21 @@ public class ImageProcessing {
         // Save the watermarked image to disk
         File outputImageFile = new File("watermarked.jpg");
         ImageIO.write(outputImage, "jpg", outputImageFile);
+
+        // Print the size of the watermarked image
+        System.out.println("Watermarked image size: " + outputImageFile.length() + " bytes");
+
         System.out.println("Watermark added to the image.");
+
+        return outputImageFile.length();
     }
 
-    private static void compressImage(String inputPath) throws IOException {
+    public static long compressImage(String inputPath) throws IOException {
         File input = new File(inputPath);
         BufferedImage image = ImageIO.read(input);
+
+        // Print the size of the original image
+        System.out.println("Original image size before compression: " + input.length() + " bytes");
 
         // compress the image
         File output = new File("compressed.jpg");
@@ -99,15 +112,23 @@ public class ImageProcessing {
         ios.flush();
         writer.dispose();
 
+        // Print the size of the compressed image
+        System.out.println("Compressed image size: " + output.length() + " bytes");
+
         System.out.println("Image compression completed.");
+
+        return output.length();
 
     }
 
-    private static void decompressImage(String inputPath) throws IOException {
+    public static long decompressImage(String inputPath) throws IOException {
         File input = new File(inputPath);
 
         // create an ImageInputStream from the compressed image file
         ImageInputStream inputStream = ImageIO.createImageInputStream(input);
+
+        // Print the size of the original image
+        System.out.println("Original image size before decompression: " + input.length() + " bytes");
 
         // get an ImageReader for the JPEG format
         ImageReader reader = ImageIO.getImageReadersByFormatName("jpeg").next();
@@ -131,6 +152,11 @@ public class ImageProcessing {
         inputStream.close();
         writer.dispose();
 
+        // Print the size of the decompressed image
+        System.out.println("Decompressed image size: " + output.length() + " bytes");
+
         System.out.println("Image decompression completed.");
+
+        return output.length();
     }
 }
